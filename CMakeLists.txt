@@ -215,7 +215,7 @@ if (NOT MSVC)
       return static_cast<int>(std::atomic<int64_t>{});
     }
   " protobuf_HAVE_BUILTIN_ATOMICS)
-  if (NOT protobuf_HAVE_BUILTIN_ATOMICS)
+  if (NOT protobuf_HAVE_BUILTIN_ATOMICS OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES "riscv")
     set(protobuf_LINK_LIBATOMIC true)
   endif (NOT protobuf_HAVE_BUILTIN_ATOMICS)
   set(CMAKE_REQUIRED_FLAGS ${OLD_CMAKE_REQUIRED_FLAGS})
@@ -405,3 +405,8 @@ endif (protobuf_BUILD_EXAMPLES)
 if(protobuf_VERBOSE)
   message(STATUS "Protocol Buffers Configuring done")
 endif(protobuf_VERBOSE)
+
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "riscv64")
+  string(APPEND CMAKE_C_STANDARD_LIBRARIES " -latomic")
+  string(APPEND CMAKE_CXX_STANDARD_LIBRARIES " -latomic")
+endif()
